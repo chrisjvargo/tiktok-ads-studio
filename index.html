@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TikTok Ads Studio — APRD 3002 Social Lab</title>
+<meta name="description" content="Screen real TikTok ad creatives with spend, CTR, engagement and retention data. Representative slice plus an oversample of the highest-engaged ads.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css?v=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23fe2c55'/%3E%3Cpath d='M12 10l12 6-12 6z' fill='%23fff'/%3E%3C/svg%3E">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="course-tag">APRD 3002 · Social Lab · Thu 10/29</div>
+      <h1>TikTok Ads <span class="h1-accent">Studio</span></h1>
+      <p class="subtitle">Real TikTok ad creatives with their spend, CTR, engagement and retention numbers. A representative slice of the platform — plus an oversample of the most-engaged ads in the dataset.</p>
+    </div>
+    <div class="topbar-side">
+      <div class="stat-chips" id="statChips"></div>
+      <div class="topbar-actions">
+        <button class="btn btn-primary reel-btn" id="reelBtn" type="button">▶ Play reel</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="viewtabs" role="tablist" aria-label="Views">
+  <button class="goaltab" id="browseTab" role="tab" aria-selected="true" type="button">Browse ads</button>
+  <button class="goaltab" id="labTab" role="tab" aria-selected="false" type="button">Thursday lab — What is TikTok for?</button>
+</div>
+<div class="missions">
+  <div class="mission"><div class="mission-num">1</div><div><h2>Find a winner</h2><p>Sort by engagement. Open the top ads. What does the creative do in the first three seconds?</p></div></div>
+  <div class="mission"><div class="mission-num">2</div><div><h2>Find the fatigue</h2><p>High spend, weak retention or CTR. Where does the video lose people — and what would you cut?</p></div></div>
+  <div class="mission"><div class="mission-num">3</div><div><h2>Find a mystery</h2><p>Numbers that don't fit the creative. Form a hypothesis, then say what data would settle it.</p></div></div>
+</div>
+
+<div id="browseView">
+<div class="toolbar" id="toolbar">
+  <div class="toolbar-row">
+    <input class="search" id="search" type="search" placeholder="Search brands, titles, industries…" aria-label="Search ads" autocomplete="off">
+    <select id="sortSel" aria-label="Sort ads">
+      <option value="engagement-desc">Sort: Engagement ↓</option>
+      <option value="ctr-desc">Sort: CTR ↓</option>
+      <option value="retention-desc">Sort: Retention ↓</option>
+      <option value="spend-desc">Sort: Spend (high end) ↓</option>
+      <option value="likes-desc">Sort: Likes ↓</option>
+      <option value="shares-desc">Sort: Shares ↓</option>
+      <option value="duration-asc">Sort: Shortest</option>
+      <option value="duration-desc">Sort: Longest</option>
+      <option value="brand-asc">Sort: Brand A–Z</option>
+    </select>
+    <span class="result-count" id="resultCount"></span>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="sidebar" aria-label="Filters">
+    <div class="side-head"><h2>Filters</h2><button class="btn btn-ghost side-clear" id="clearFilters" type="button">Clear all</button></div>
+    <section class="side-section">
+      <h3>Slice</h3>
+      <div class="wall" id="sliceWall"></div>
+    </section>
+    <section class="side-section">
+      <h3>Campaign objective</h3>
+      <div class="wall" id="objectiveWall"></div>
+    </section>
+    <section class="side-section">
+      <h3>Industry</h3>
+      <div class="wall" id="industryWall"></div>
+    </section>
+    <section class="side-section">
+      <h3>Spend tier</h3>
+      <div class="wall" id="tierWall"></div>
+    </section>
+    <section class="side-section">
+      <h3>Duration</h3>
+      <div class="wall" id="durationWall"></div>
+    </section>
+  </aside>
+  <main>
+    <div class="goaltabs" id="sliceTabs" role="tablist" aria-label="Slice views"></div>
+    <div class="grid" id="grid" aria-live="polite"></div>
+  </main>
+</div>
+
+<footer class="pagefoot">
+  <div class="foot-grid">
+    <div>
+      <h3>Read the numbers honestly</h3>
+      <ul>
+        <li><strong>Engagement</strong> = likes + shares + favorites, as provided in the dataset. Counts, not rates — big spend buys big counts.</li>
+        <li><strong>Spend</strong> is shown as the dataset's modeled range (low–high) for the ad. It is an estimate band, not an audited invoice.</li>
+        <li><strong>CTR</strong> and <strong>retention</strong> are shown as provided. Retention is the dataset's mean retention measure — treat it as relative, not absolute.</li>
+        <li><strong>Top-engaged slice</strong> deliberately oversamples the most-engaged ads. It is not what a typical TikTok ad looks like — the representative slice is.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>About this data</h3>
+      <ul id="aboutData">
+        <li>Creatives and metrics come from the course TikTok ads dataset (thousands of ads with video, hydrated on the CU GPU server).</li>
+        <li>Sampling is seeded and documented, so any student can reproduce the slice.</li>
+        <li>Videos are the real ad creatives, compressed for the web. Posters are frames from the actual videos.</li>
+      </ul>
+    </div>
+  </div>
+</div><!-- /browseView -->
+<div id="labView" hidden>
+  <div class="lab-wrap">
+    <h2 class="lab-h">Thursday lab — What is TikTok actually for?</h2>
+    <div class="lab-steps">
+      <div class="mission"><div class="mission-num">1</div><div><h2>Label</h2><p>For each ad: industry, product/service, likely objective (sell/signups · consideration · awareness). Label at least 30.</p></div></div>
+      <div class="mission"><div class="mission-num">2</div><div><h2>Segment</h2><p>The tables below calculate themselves from your labels: spend share, cost per engagement, CTR, retention — by industry and objective.</p></div></div>
+      <div class="mission"><div class="mission-num">3</div><div><h2>Compare</h2><p>Price TikTok against every CPM this class has touched — Trade Desk, Peter's numbers, Netflix, local TV, OOH.</p></div></div>
+      <div class="mission"><div class="mission-num">4</div><div><h2>Conclude</h2><p>Name the ideal TikTok advertiser from your evidence. One page, three claims, one counterexample. Due Tue Nov 3.</p></div></div>
+    </div>
+    <p class="lab-progress" id="labProgress"></p>
+    <div class="lab-queue" id="labQueue"></div>
+    <div id="labSegments"></div>
+    <div id="labCosts"></div>
+    <div class="panel"><h3>Step 4 — your conclusion (for the assignment)</h3>
+      <ul class="interest-list">
+        <li>Which industries dominate modeled spend in your labels — and which dominate <em>engagement</em>? Are they the same list?</li>
+        <li>What does a dollar buy on TikTok vs. the semester's CPM table — and what exactly is the denominator problem?</li>
+        <li>Name the ideal company that should be advertising on TikTok, from the engagement/performance and relative costs you measured. Defend it against your own counterexample.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</footer>
+
+<div class="overlay" id="detailOverlay" hidden>
+  <div class="detail" role="dialog" aria-modal="true" aria-label="Ad screening">
+    <div class="detail-head">
+      <div class="detail-nav">
+        <button class="btn btn-ghost" id="prevBtn" type="button">← Prev</button>
+        <button class="btn btn-ghost" id="nextBtn" type="button">Next →</button>
+      </div>
+      <div class="detail-id" id="detailId"></div>
+      <button class="btn btn-ghost" id="closeBtn" type="button">Close ✕</button>
+    </div>
+    <div class="detail-body" id="detailBody"></div>
+  </div>
+</div>
+
+<div class="overlay reel-overlay" id="reelOverlay" hidden>
+  <div class="reel" role="dialog" aria-modal="true" aria-label="Video reel">
+    <div class="reel-stage" id="reelStage">
+      <video id="reelVideo" playsinline preload="auto"></video>
+      <div class="reel-topfade">
+        <div class="reel-now" id="reelTitle"></div>
+        <div class="reel-count" id="reelCount"></div>
+      </div>
+      <button class="reel-close" id="reelClose" type="button" aria-label="Close reel">✕</button>
+      <div class="skipbox" id="skipBox" hidden></div>
+      <div class="reel-controls">
+        <input class="reel-scrub" id="reelScrub" type="range" min="0" max="1000" value="0" aria-label="Seek">
+        <div class="reel-buttons">
+          <button class="reel-btn-ctl" id="reelPrev" type="button" aria-label="Previous video" title="Previous (←)">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg>
+          </button>
+          <button class="reel-btn-ctl" id="reelPlay" type="button" aria-label="Play or pause" title="Play/pause (space)">
+            <svg id="reelPlayIcon" viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+          <button class="reel-btn-ctl" id="reelNext" type="button" aria-label="Next video" title="Next (→)">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg>
+          </button>
+          <button class="reel-btn-ctl" id="reelMute" type="button" aria-label="Mute or unmute" title="Mute (m)">
+            <svg id="reelMuteIcon" viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>
+          </button>
+          <span class="reel-time" id="reelTime">0:00 / 0:00</span>
+          <span class="reel-spacer"></span>
+          <button class="reel-btn-ctl" id="reelFull" type="button" aria-label="Fullscreen" title="Fullscreen (f)">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M4 4h6v2H6v4H4V4zm16 0v6h-2V6h-4V4h6zM4 14h2v4h4v2H4v-6zm16 6h-6v-2h4v-4h2v6z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <aside class="reel-queue">
+      <h3>Up next</h3>
+      <div class="reel-queue-list" id="reelQueue"></div>
+    </aside>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+<script src="assets/app.js?v=2"></script>
+<script src="assets/lab.js?v=1"></script>
+</body>
+</html>
