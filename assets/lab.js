@@ -129,6 +129,38 @@ const COST_ROWS = [
   ["OOH package (class deck)", "CPM", "≈ $4.80 CPM on a $60K package at frequency ≈ 9", "Traditional Media I deck"],
 ];
 
+function renderEmarketer() {
+  const el = document.getElementById("labEmarketer");
+  if (!el) return;
+  const saved = JSON.parse(localStorage.getItem("tt_emk_v1") || "{}");
+  const channels = ["TikTok", "Meta (Facebook/Instagram)", "YouTube", "CTV / streaming video", "Display", "Search"];
+  el.innerHTML = `<div class="panel"><h3>eMarketer cross-platform CPMs — the opportunity-cost table</h3>
+  <p class="daypart-note" style="margin-top:0">TikTok is the one medium in this lab you can price from raw data. For every other channel, planners reach for a benchmark table — that is eMarketer's (Insider Intelligence) job. Via <strong>CU Libraries → eMarketer</strong>, find the current CPM table and enter the figures here (they save in your browser). Cite the table name and date in your write-up.</p>
+  <table class="kv-table seg-table"><thead><tr><td>Channel</td><td>eMarketer CPM ($)</td><td>Impressions $10,000 buys</td></tr></thead><tbody>
+  ${channels.map((c) => `<tr><td>${esc(c)}</td><td><input class="emk-input" data-ch="${esc(c)}" type="number" min="0" step="0.01" value="${saved[c] ?? ""}" placeholder="from eMarketer"></td><td class="emk-out" data-out="${esc(c)}">—</td></tr>`).join("")}
+  </tbody></table>
+  <p class="daypart-note" id="emkReadout"></p>
+  <p class="daypart-note">Public starting points until your eMarketer pull lands: TikTok ≈ $9–13 CPM in 2026 benchmark roundups; the class anecdotes below are <em>not</em> benchmarks — they are what one buyer (Peter) and our own course data showed on specific buys.</p></div>`;
+  const update = () => {
+    const vals = {};
+    el.querySelectorAll(".emk-input").forEach((i) => { if (i.value) vals[i.dataset.ch] = Number(i.value); });
+    localStorage.setItem("tt_emk_v1", JSON.stringify(vals));
+    el.querySelectorAll(".emk-out").forEach((o) => {
+      const v = vals[o.dataset.out];
+      o.textContent = v ? Math.round(10000 / v * 1000).toLocaleString("en-US") : "—";
+    });
+    const tk = vals["TikTok"];
+    const others = Object.entries(vals).filter(([k]) => k !== "TikTok");
+    document.getElementById("emkReadout").textContent = tk && others.length
+      ? `Opportunity cost: at your eMarketer CPMs, $10,000 buys ${Math.round(10000 / tk * 1000).toLocaleString("en-US")} TikTok impressions vs. ` +
+        others.map(([k, v]) => `${Math.round(10000 / v * 1000).toLocaleString("en-US")} on ${k}`).join(" · ") +
+        `. Against that, this dataset prices TikTok engagement at $0.21–$1.84 apiece depending on objective — engagements, not impressions. Say what each denominator hides.`
+      : "Enter at least TikTok and one other channel to see the opportunity-cost readout.";
+  };
+  el.querySelectorAll(".emk-input").forEach((i) => i.addEventListener("input", update));
+  update();
+}
+
 function renderCosts() {
   const el = document.getElementById("labCosts");
   if (!el) return;
@@ -142,7 +174,7 @@ function renderCosts() {
 async function initLab() {
   labLoad();
   try { lab.segments = await (await fetch("data/segments.json")).json(); } catch (e) { lab.segments = null; }
-  buildQueue(); renderLabQueue(); renderSegments(); renderCosts();
+  buildQueue(); renderLabQueue(); renderSegments(); renderEmarketer(); renderCosts();
   const browseBtn = document.getElementById("browseTab");
   const labBtn = document.getElementById("labTab");
   const browseView = document.getElementById("browseView");
