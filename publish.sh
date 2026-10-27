@@ -4,7 +4,7 @@ set -euo pipefail
 SRC="/Users/chrisjvargo/My Drive/2work/courses_taught/1cu_media_planning/outputs/tiktok_studio"
 DST="$HOME/gh_deploy/tiktok-ads-studio"
 mkdir -p "$DST"
-rsync -a --delete --exclude build --exclude '*.pyc' "$SRC/" "$DST/"
+rsync -a --delete --exclude .git --exclude build --exclude '*.pyc' "$SRC/" "$DST/"
 cd "$DST"
 if [ ! -d .git ]; then
   git init -q -b main

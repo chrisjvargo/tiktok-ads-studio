@@ -30,6 +30,8 @@ const TABS = [
 const esc = (s) => String(s == null ? "" : s)
   .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
   .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+const humanObjective = (o) => String(o || "").replace("campaign_objective_", "").replace(/_/g, " ") || "—";
+const brandName = (r) => r.brand || "Unknown brand";
 const fmtInt = (n) => n == null ? "—" : Math.round(Number(n)).toLocaleString("en-US");
 const fmtCompact = (n) => {
   if (n == null) return "—";
@@ -174,9 +176,9 @@ function renderGrid() {
         <span class="play-hint">▶ watch</span>
       </div>
       <div class="card-body">
-        <div class="card-idrow"><span class="card-rowid">${esc(r.brand)}</span><span class="goal-chip ${r.slice === "top" ? "goal-CTR" : "goal-none"}">${r.slice === "top" ? "top-engaged" : "representative"}</span></div>
+        <div class="card-idrow"><span class="card-rowid">${esc(brandName(r))}</span><span class="goal-chip ${r.slice === "top" ? "goal-CTR" : "goal-none"}">${r.slice === "top" ? "top-engaged" : "representative"}</span></div>
         <h3 class="card-title">${esc(r.title || r.brand)}</h3>
-        <div class="card-theme">${esc(r.industry)} · ${esc(r.objective)}</div>
+        <div class="card-theme">${esc(humanObjective(r.objective))} objective</div>
         ${metricMini("engagement", r.engagement, maxEng, fmtCompact)}
         ${metricMini("ctr", r.ctr, state.p75.ctr ? state.p75.ctr * 1.6 : 1, fmtPct)}
         ${metricMini("retention", r.retention, state.p75.retention ? state.p75.retention * 1.6 : 1, fmtPct)}
@@ -198,8 +200,8 @@ function detailHTML(r) {
   const shareShare = r.engagement ? (100 * (r.shares || 0) / r.engagement) : null;
   return `
     <h2 class="detail-title">${esc(r.title || r.brand)}</h2>
-    <div class="detail-sub"><span class="card-rowid">${esc(r.brand)}</span>
-      <span class="tchip">${esc(r.industry)}</span><span class="tchip">objective: ${esc(r.objective)}</span>
+    <div class="detail-sub"><span class="card-rowid">${esc(brandName(r))}</span>
+      <span class="tchip">objective: ${esc(humanObjective(r.objective))}</span>
       <span class="tchip">${r.slice === "top" ? `★ top-engaged #${r.rank}` : "representative slice"}</span>
     </div>
     <div class="detail-cols">
@@ -309,7 +311,7 @@ function reelLoad(i) {
   reel.pos = i;
   const v = $("reelVideo");
   v.poster = r.poster; v.src = r.mp4;
-  $("reelTitle").textContent = `${r.brand} — ${r.title || ""}`;
+  $("reelTitle").textContent = `${brandName(r)} — ${r.title || ""}`;
   $("reelCount").textContent = `${i + 1} of ${reel.list.length} · ${fmtCompact(r.engagement)} engagement · CTR ${fmtPct(r.ctr)}`;
   document.querySelectorAll(".reel-qitem").forEach((el, j) => el.classList.toggle("active", j === i));
   const active = document.querySelector(".reel-qitem.active");
