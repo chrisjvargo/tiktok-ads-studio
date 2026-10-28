@@ -1,148 +1,148 @@
 {
  "byObjective": {
-  "campaign_objective_": {
-   "ads": 5,
-   "spend": 61912,
-   "engagement": 336345,
-   "costPerEngagement": 0.1841,
-   "medianCtr": 0.18,
-   "medianRetention": 0.1055,
-   "medianDuration": 80.0
-  },
   "campaign_objective_app_install": {
-   "ads": 41,
-   "spend": 615262,
-   "engagement": 2543777,
-   "costPerEngagement": 0.2419,
+   "ads": 36,
+   "spend": 492736.0,
+   "engagement": 1218864.0,
+   "costPerEngagement": 0.4043,
    "medianCtr": 0.2,
-   "medianRetention": 0.147,
-   "medianDuration": 23.0
-  },
-  "campaign_objective_conversion": {
-   "ads": 2650,
-   "spend": 33015115,
-   "engagement": 50395628,
-   "costPerEngagement": 0.6551,
-   "medianCtr": 0.23,
-   "medianRetention": 0.1135,
+   "medianRetention": 0.1409649291857529,
    "medianDuration": 25.0
   },
+  "campaign_objective_conversion": {
+   "ads": 2097,
+   "spend": 26010697.0,
+   "engagement": 37663687.0,
+   "costPerEngagement": 0.6906,
+   "medianCtr": 0.23,
+   "medianRetention": 0.1115490836053226,
+   "medianDuration": 24.0
+  },
   "campaign_objective_lead_generation": {
-   "ads": 1044,
-   "spend": 14449563,
-   "engagement": 11478199,
-   "costPerEngagement": 1.2589,
-   "medianCtr": 0.34,
-   "medianRetention": 0.0831,
-   "medianDuration": 30.0
+   "ads": 665,
+   "spend": 9169375.0,
+   "engagement": 7731751.0,
+   "costPerEngagement": 1.1859,
+   "medianCtr": 0.33,
+   "medianRetention": 0.0854034909832497,
+   "medianDuration": 29.0
   },
   "campaign_objective_product_sales": {
-   "ads": 1005,
-   "spend": 14226085,
-   "engagement": 7749338,
-   "costPerEngagement": 1.8358,
-   "medianCtr": 0.15,
-   "medianRetention": 0.0642,
+   "ads": 798,
+   "spend": 11598345.0,
+   "engagement": 6426606.0,
+   "costPerEngagement": 1.8047,
+   "medianCtr": 0.16,
+   "medianRetention": 0.06571894275106294,
    "medianDuration": 57.0
   },
   "campaign_objective_reach": {
-   "ads": 617,
-   "spend": 8131358,
-   "engagement": 11307769,
-   "costPerEngagement": 0.7191,
-   "medianCtr": 0.45,
-   "medianRetention": 0.0742,
-   "medianDuration": 29.0
+   "ads": 502,
+   "spend": 6827976.0,
+   "engagement": 8143486.0,
+   "costPerEngagement": 0.8385,
+   "medianCtr": 0.44,
+   "medianRetention": 0.0756446906046952,
+   "medianDuration": 27.0
   },
   "campaign_objective_traffic": {
-   "ads": 841,
-   "spend": 11243795,
-   "engagement": 20901330,
-   "costPerEngagement": 0.5379,
+   "ads": 738,
+   "spend": 10219271.0,
+   "engagement": 19614867.0,
+   "costPerEngagement": 0.521,
    "medianCtr": 0.23,
-   "medianRetention": 0.0938,
-   "medianDuration": 24.0
+   "medianRetention": 0.09471114727420672,
+   "medianDuration": 23.0
+  },
+  "campaign_objective_unknown": {
+   "ads": 3,
+   "spend": 652.0,
+   "engagement": 5008.0,
+   "costPerEngagement": 0.1302,
+   "medianCtr": 0.41,
+   "medianRetention": 0.10550751792198118,
+   "medianDuration": 39.0
   },
   "campaign_objective_video_view": {
-   "ads": 646,
-   "spend": 7308805,
-   "engagement": 34528894,
-   "costPerEngagement": 0.2117,
+   "ads": 526,
+   "spend": 6008563.0,
+   "engagement": 28539776.0,
+   "costPerEngagement": 0.2105,
    "medianCtr": 0.58,
-   "medianRetention": 0.127,
-   "medianDuration": 31.0
+   "medianRetention": 0.12512063419117647,
+   "medianDuration": 32.0
   }
  },
  "byDuration": {
-  "<=15s": {
-   "ads": 1346,
-   "spend": 15119839,
-   "engagement": 28377588,
-   "costPerEngagement": 0.5328,
-   "medianCtr": 0.295,
-   "medianRetention": 0.1853,
-   "medianDuration": 12.0
-  },
   "16-30s": {
-   "ads": 2185,
-   "spend": 29022521,
-   "engagement": 43754286,
-   "costPerEngagement": 0.6633,
-   "medianCtr": 0.31,
-   "medianRetention": 0.1094,
+   "ads": 1740,
+   "spend": 23885864.0,
+   "engagement": 34667695.0,
+   "costPerEngagement": 0.689,
+   "medianCtr": 0.3,
+   "medianRetention": 0.10695582113602793,
    "medianDuration": 21.0
   },
   "31-60s": {
-   "ads": 2409,
-   "spend": 32373735,
-   "engagement": 33667866,
-   "costPerEngagement": 0.9616,
-   "medianCtr": 0.26,
-   "medianRetention": 0.0625,
+   "ads": 1883,
+   "spend": 25178444.0,
+   "engagement": 28175595.0,
+   "costPerEngagement": 0.8936,
+   "medianCtr": 0.25,
+   "medianRetention": 0.06085651585634162,
    "medianDuration": 45.0
   },
   "60s+": {
-   "ads": 909,
-   "spend": 12535800,
-   "engagement": 33441540,
-   "costPerEngagement": 0.3749,
-   "medianCtr": 0.26,
-   "medianRetention": 0.0578,
-   "medianDuration": 93.0
+   "ads": 623,
+   "spend": 8399402.0,
+   "engagement": 25088217.0,
+   "costPerEngagement": 0.3348,
+   "medianCtr": 0.27,
+   "medianRetention": 0.05815166169266175,
+   "medianDuration": 90.0
+  },
+  "<=15s": {
+   "ads": 1119,
+   "spend": 12863905.0,
+   "engagement": 21412538.0,
+   "costPerEngagement": 0.6008,
+   "medianCtr": 0.3,
+   "medianRetention": 0.18230689495980093,
+   "medianDuration": 12.0
   }
  },
  "byTier": {
   "0": {
-   "ads": 1689,
-   "spend": 10134,
-   "engagement": 2434812,
-   "costPerEngagement": 0.0042,
-   "medianCtr": 0.63,
-   "medianRetention": 0.108,
-   "medianDuration": 26.0
+   "ads": 1307,
+   "spend": 7842.0,
+   "engagement": 1475367.0,
+   "costPerEngagement": 0.0053,
+   "medianCtr": 0.64,
+   "medianRetention": 0.10863115891741845,
+   "medianDuration": 25.0
   },
   "1": {
-   "ads": 2277,
-   "spend": 735471,
-   "engagement": 10329153,
-   "costPerEngagement": 0.0712,
-   "medianCtr": 0.29,
-   "medianRetention": 0.0962,
-   "medianDuration": 31.0
+   "ads": 1781,
+   "spend": 575263.0,
+   "engagement": 7831729.0,
+   "costPerEngagement": 0.0735,
+   "medianCtr": 0.28,
+   "medianRetention": 0.09769384400459531,
+   "medianDuration": 30.0
   },
   "2": {
-   "ads": 2883,
-   "spend": 88306290,
-   "engagement": 126477315,
-   "costPerEngagement": 0.6982,
+   "ads": 2277,
+   "spend": 69744510.0,
+   "engagement": 100036949.0,
+   "costPerEngagement": 0.6972,
    "medianCtr": 0.19,
-   "medianRetention": 0.0929,
-   "medianDuration": 31.0
+   "medianRetention": 0.09370827979945323,
+   "medianDuration": 29.0
   }
  },
  "population": {
-  "ads": 6849,
-  "modeledSpend": 89051895,
-  "engagement": 139241280
+  "ads": 5365,
+  "modeledSpend": 70327615.0,
+  "engagement": 109344045.0
  }
 }
