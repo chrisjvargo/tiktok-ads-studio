@@ -526,3 +526,16 @@ td.cell-empty{color:#9aa7b4}
 .cpm-note{color:#172b4d;max-width:80ch;font-size:14px}
 .play-badge{position:absolute;right:8px;bottom:8px;background:#fe2c55;color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px}
 .poster-wrap{position:relative}
+
+/* v6 theme fix — dark surfaces, cream ink, red signal only */
+.slice-bar{padding:20px 32px 8px}
+.slice-bar label{font-family:var(--font-display);font-weight:800;font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-dim)}
+.slice-bar select{background:var(--bg-well);border:1px solid var(--line);color:var(--ink);font-family:var(--font-body);font-weight:600;font-size:15px;text-transform:none;letter-spacing:0;padding:10px 14px;border-radius:var(--radius-sm);max-width:none}
+.slice-bar select:focus{outline:none;border-color:var(--signal)}
+.slice-stats{border:1px solid var(--line);border-left:4px solid var(--signal);background:var(--bg-raise);color:var(--ink);padding:16px 20px;margin:14px 32px 18px}
+.slice-title{font-family:var(--font-display);font-weight:900;font-size:18px;color:var(--ink);margin-bottom:8px}
+.slice-nums{display:flex;gap:20px;flex-wrap:wrap;font-size:14px;color:var(--ink-dim)}
+.slice-nums strong{color:var(--ink);font-family:var(--font-mono);font-weight:700}
+.honesty{color:var(--ink-faint);padding:0 32px}
+.grid{padding:0 32px}
+@media (max-width:700px){.grid,.honesty{padding:0 16px}.slice-stats{margin:14px 16px 18px}.slice-bar{padding:16px 16px 8px}}
