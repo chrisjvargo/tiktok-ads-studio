@@ -1,15 +1,18 @@
 # TikTok Ads Studio — APRD 3002 Social Lab
 
-Static site (no build step). Tiles + detail screening + reel, modeled on the
-Brandzooka Screening Room pattern. Data: US-English slice of the course TikTok ads dataset (2026-10-28 rebuild,
-`build/make_slice_local.py`) — 181 ads with real video creative (70 top-engaged
-ddoversample + 111 representative), non-English ads removed by title+ASR rule.
-Population segments in data/segments.json are recomputed on the 5,365-ad
-US-English population.
+Static site (no build step). Decide dashboard + ad browser.
 
-- Slice builder (server): `build/make_slice.py` → `data/data.json`, `build/validation.txt`
-- Media pack (local): `build/make_media.py <originals-dir>` → `media/<id>.jpg|.mp4`
+- Data v2 (2026-10-28, server `socialcontextgpu3`): 352 US-English ads with
+  real video creative, famous/branded first, stratified across objective ×
+  spend tier (`tt_studio_slice2` on the server; sample script seeded 3002).
+  Industries resolved from brand/title/landing evidence + TikTok taxonomy
+  (`build/resolve_industries.py`); TikTok house ads removed.
+- `data/segments.json`: by-industry and by-objective cost ranks plus the
+  objective × industry cost-per-engagement matrix (cells need n≥4).
+- Decide view: slice stats for the current filter, both rankings, matrix,
+  $10,000 benchmark comparison (engagements vs CPM impressions), verdict
+  scaffold, and the Adobe Express CMO decision task (`DECISION_TASK.md`).
 - Publish: `publish.sh` → https://chrisjvargo.com/tiktok-ads-studio/
 
-Spend is the dataset's modeled low–high band, not audited invoices.
-Engagement = likes + shares + favorites as provided.
+Spend is modeled from TikTok spend tiers (≈$6 / $323 / $30,630), not
+invoices. Engagement = likes + shares + favorites as provided.

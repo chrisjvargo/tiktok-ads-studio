@@ -12,10 +12,10 @@ const med = (vals) => { const v = vals.filter((x) => x != null).sort((a, b) => a
 
 const state = { rows: [], seg: null, industry: "", objective: "", query: "", sort: "engagement-desc", detailList: [], detailIdx: 0 };
 const BENCH = [
-  ["Meta (enter eMarketer CPM)", ""],
-  ["YouTube (enter eMarketer CPM)", ""],
-  ["CTV / streaming (enter eMarketer CPM)", ""],
-  ["Search (enter eMarketer CPM)", ""],
+  ["Meta — Gupta Media 2025 avg", 8.19],
+  ["YouTube — Gupta Media 2025 avg", 4.99],
+  ["CTV / streaming — eMarketer Dec 2025", 26.50],
+  ["TikTok platform CPM — Gupta Media 2025 avg", 4.82],
 ];
 const FIELD_NOTES = [
   ["Subaru on Trade Desk (real export, this semester)", 3.14],
@@ -65,7 +65,7 @@ function renderDecide() {
   $("#matrixWrap").innerHTML = html + `</tbody></table>`;
   // benchmarks
   const tiktokRow = `<tr class="rank-top"><td>TikTok (current slice)</td><td>${fmtCpe(s.cpe)} / engagement</td><td>${s.cpe ? fmtInt(10000 / s.cpe) + " engagements" : "—"}</td></tr>`;
-  const inputs = BENCH.map(([name], i) => `<tr><td>${esc(name)}</td><td><input class="bench-in" data-i="${i}" type="number" min="0" step="0.01" placeholder="CPM $"> / 1,000 impressions</td><td class="bench-out" data-i="${i}">—</td></tr>`).join("");
+  const inputs = BENCH.map(([name, cpm], i) => `<tr><td>${esc(name)}</td><td>$${cpm.toFixed(2)} / 1,000 impressions</td><td>${fmtInt(10000 / cpm * 1000)} impressions</td></tr>`).join("");
   const notes = FIELD_NOTES.map(([n, c]) => `<tr><td>${esc(n)} — field note, not a benchmark</td><td>$${c.toFixed(2)} CPM</td><td>${fmtInt(10000 / c * 1000)} impressions</td></tr>`).join("");
   $("#benchWrap").innerHTML = `<table class="rank"><thead><tr><th>Channel</th><th>Price</th><th>$10,000 buys</th></tr></thead><tbody>${tiktokRow}${inputs}${notes}</tbody></table>`;
   document.querySelectorAll(".bench-in").forEach((inp) => inp.addEventListener("input", () => {
