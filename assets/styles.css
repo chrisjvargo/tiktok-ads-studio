@@ -511,3 +511,18 @@ td.cell-empty{color:#9aa7b4}
 .verdict p{margin:0 0 8px}
 .honesty{color:#526174;font-size:13px;max-width:80ch;margin:30px 0 40px}
 .card-nums{display:flex;gap:10px;font-size:12px;font-weight:700;color:#172b4d;margin-top:6px;flex-wrap:wrap}
+
+/* v5 slice bar + stats */
+.slice-bar{display:flex;gap:16px;align-items:end;flex-wrap:wrap;padding:18px 0 8px}
+.slice-bar label{font-weight:700;font-size:13px;display:flex;flex-direction:column;gap:6px}
+.slice-bar select{font:inherit;padding:9px 12px;border:1px solid #c7cdd1;border-radius:6px;background:#fff;font-weight:700}
+.slice-stats{border:2px solid #172b4d;background:#fff;padding:14px 18px;margin:10px 0}
+.slice-title{font-weight:900;font-size:17px;margin-bottom:8px}
+.slice-nums{display:flex;gap:18px;flex-wrap:wrap;font-size:14px}
+.cpm-view{margin:6px 0 14px}
+.cpm-head{font-weight:800;font-size:13px;margin-bottom:6px}
+.bench-row{display:flex;gap:10px;flex-wrap:wrap}
+.bench-chip{border:1px solid #c7cdd1;background:#fff;padding:6px 10px;font-size:13px}
+.cpm-note{color:#172b4d;max-width:80ch;font-size:14px}
+.play-badge{position:absolute;right:8px;bottom:8px;background:#fe2c55;color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px}
+.poster-wrap{position:relative}
