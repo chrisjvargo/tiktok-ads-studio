@@ -1,148 +1,602 @@
 {
- "byObjective": {
-  "campaign_objective_app_install": {
-   "ads": 36,
-   "spend": 492736.0,
-   "engagement": 1218864.0,
-   "costPerEngagement": 0.4043,
-   "medianCtr": 0.2,
-   "medianRetention": 0.1409649291857529,
-   "medianDuration": 25.0
+ "byIndustry": {
+  "Entertainment & Media": {
+   "ads": 33,
+   "spend": 676779,
+   "engagement": 13063969,
+   "costPerEngagement": 0.0518,
+   "spendShare": 0.084,
+   "medianCtr": 0.14,
+   "medianRetention": 0.110224833809932,
+   "medianDuration": 42.0
   },
-  "campaign_objective_conversion": {
-   "ads": 2097,
-   "spend": 26010697.0,
-   "engagement": 37663687.0,
-   "costPerEngagement": 0.6906,
-   "medianCtr": 0.23,
-   "medianRetention": 0.1115490836053226,
-   "medianDuration": 24.0
+  "Games & Apps": {
+   "ads": 62,
+   "spend": 1625980,
+   "engagement": 18013235,
+   "costPerEngagement": 0.0903,
+   "spendShare": 0.201,
+   "medianCtr": 0.19,
+   "medianRetention": 0.097968338806095,
+   "medianDuration": 28.5
   },
-  "campaign_objective_lead_generation": {
-   "ads": 665,
-   "spend": 9169375.0,
-   "engagement": 7731751.0,
-   "costPerEngagement": 1.1859,
-   "medianCtr": 0.33,
-   "medianRetention": 0.0854034909832497,
+  "Fashion & Accessories": {
+   "ads": 49,
+   "spend": 648787,
+   "engagement": 6782202,
+   "costPerEngagement": 0.0957,
+   "spendShare": 0.08,
+   "medianCtr": 0.13,
+   "medianRetention": 0.1395316295102417,
+   "medianDuration": 15.0
+  },
+  "Education": {
+   "ads": 12,
+   "spend": 245381,
+   "engagement": 2470540,
+   "costPerEngagement": 0.0993,
+   "spendShare": 0.03,
+   "medianCtr": 0.22999999999999998,
+   "medianRetention": 0.1149907618735333,
    "medianDuration": 29.0
   },
-  "campaign_objective_product_sales": {
-   "ads": 798,
-   "spend": 11598345.0,
-   "engagement": 6426606.0,
-   "costPerEngagement": 1.8047,
-   "medianCtr": 0.16,
-   "medianRetention": 0.06571894275106294,
-   "medianDuration": 57.0
+  "Lifestyle & Gifts": {
+   "ads": 9,
+   "spend": 214739,
+   "engagement": 1742559,
+   "costPerEngagement": 0.1232,
+   "spendShare": 0.026,
+   "medianCtr": 0.24,
+   "medianRetention": 0.14597444587268493,
+   "medianDuration": 16.0
   },
-  "campaign_objective_reach": {
-   "ads": 502,
-   "spend": 6827976.0,
-   "engagement": 8143486.0,
-   "costPerEngagement": 0.8385,
-   "medianCtr": 0.44,
-   "medianRetention": 0.0756446906046952,
-   "medianDuration": 27.0
+  "Health & Wellness": {
+   "ads": 13,
+   "spend": 337259,
+   "engagement": 2686495,
+   "costPerEngagement": 0.1255,
+   "spendShare": 0.042,
+   "medianCtr": 0.18,
+   "medianRetention": 0.1027979850636373,
+   "medianDuration": 31.0
   },
-  "campaign_objective_traffic": {
-   "ads": 738,
-   "spend": 10219271.0,
-   "engagement": 19614867.0,
-   "costPerEngagement": 0.521,
-   "medianCtr": 0.23,
-   "medianRetention": 0.09471114727420672,
+  "Finance, Legal & Services": {
+   "ads": 21,
+   "spend": 582299,
+   "engagement": 3313736,
+   "costPerEngagement": 0.1757,
+   "spendShare": 0.072,
+   "medianCtr": 0.31,
+   "medianRetention": 0.09708954245372065,
+   "medianDuration": 29.0
+  },
+  "Food, Drink & Restaurants": {
+   "ads": 25,
+   "spend": 674829,
+   "engagement": 3442929,
+   "costPerEngagement": 0.196,
+   "spendShare": 0.083,
+   "medianCtr": 0.34,
+   "medianRetention": 0.1225930688482319,
+   "medianDuration": 16.0
+  },
+  "Beauty & Personal Care": {
+   "ads": 58,
+   "spend": 1563440,
+   "engagement": 6864936,
+   "costPerEngagement": 0.2277,
+   "spendShare": 0.193,
+   "medianCtr": 0.19,
+   "medianRetention": 0.0914648639617392,
+   "medianDuration": 39.5
+  },
+  "Baby, Kids & Family": {
+   "ads": 2,
+   "spend": 61260,
+   "engagement": 259999,
+   "costPerEngagement": 0.2356,
+   "spendShare": 0.008,
+   "medianCtr": 0.26,
+   "medianRetention": 0.12086848864215499,
+   "medianDuration": 27.5
+  },
+  "Travel & Local Experiences": {
+   "ads": 12,
+   "spend": 337253,
+   "engagement": 1261027,
+   "costPerEngagement": 0.2674,
+   "spendShare": 0.042,
+   "medianCtr": 0.225,
+   "medianRetention": 0.1172337763542067,
+   "medianDuration": 22.0
+  },
+  "Home & Living": {
+   "ads": 21,
+   "spend": 308902,
+   "engagement": 867837,
+   "costPerEngagement": 0.3559,
+   "spendShare": 0.038,
+   "medianCtr": 0.09,
+   "medianRetention": 0.1499434189122286,
    "medianDuration": 23.0
   },
-  "campaign_objective_unknown": {
-   "ads": 3,
-   "spend": 652.0,
-   "engagement": 5008.0,
-   "costPerEngagement": 0.1302,
-   "medianCtr": 0.41,
-   "medianRetention": 0.10550751792198118,
-   "medianDuration": 39.0
+  "Auto & Transport": {
+   "ads": 4,
+   "spend": 92213,
+   "engagement": 205625,
+   "costPerEngagement": 0.4485,
+   "spendShare": 0.011,
+   "medianCtr": 0.185,
+   "medianRetention": 0.0968375211578783,
+   "medianDuration": 48.5
   },
-  "campaign_objective_video_view": {
-   "ads": 526,
-   "spend": 6008563.0,
-   "engagement": 28539776.0,
-   "costPerEngagement": 0.2105,
-   "medianCtr": 0.58,
-   "medianRetention": 0.12512063419117647,
+  "Electronics & Gadgets": {
+   "ads": 20,
+   "spend": 460114,
+   "engagement": 994940,
+   "costPerEngagement": 0.4625,
+   "spendShare": 0.057,
+   "medianCtr": 0.11499999999999999,
+   "medianRetention": 0.09734136466648366,
+   "medianDuration": 35.5
+  },
+  "Pets": {
+   "ads": 7,
+   "spend": 214410,
+   "engagement": 283323,
+   "costPerEngagement": 0.7568,
+   "spendShare": 0.026,
+   "medianCtr": 0.09,
+   "medianRetention": 0.106492214119128,
+   "medianDuration": 43.0
+  },
+  "Home Appliances & Kitchen": {
+   "ads": 4,
+   "spend": 61272,
+   "engagement": 69857,
+   "costPerEngagement": 0.8771,
+   "spendShare": 0.008,
+   "medianCtr": 0.28500000000000003,
+   "medianRetention": 0.1312449383144331,
+   "medianDuration": 23.0
+  }
+ },
+ "byObjective": {
+  "App Install": {
+   "ads": 6,
+   "spend": 122849,
+   "engagement": 3592574,
+   "costPerEngagement": 0.0342,
+   "spendShare": 0.015,
+   "medianCtr": 0.16499999999999998,
+   "medianRetention": 0.1199172204339779,
+   "medianDuration": 24.0
+  },
+  "Video Views": {
+   "ads": 37,
+   "spend": 829923,
+   "engagement": 12206612,
+   "costPerEngagement": 0.068,
+   "spendShare": 0.102,
+   "medianCtr": 0.31,
+   "medianRetention": 0.11374018310426365,
+   "medianDuration": 28.0
+  },
+  "Conversion": {
+   "ads": 130,
+   "spend": 2734241,
+   "engagement": 22039857,
+   "costPerEngagement": 0.1241,
+   "spendShare": 0.337,
+   "medianCtr": 0.14,
+   "medianRetention": 0.1235393011793347,
+   "medianDuration": 24.5
+  },
+  "Product Sales": {
+   "ads": 54,
+   "spend": 1288751,
+   "engagement": 7657602,
+   "costPerEngagement": 0.1683,
+   "spendShare": 0.159,
+   "medianCtr": 0.1,
+   "medianRetention": 0.0861784498468734,
+   "medianDuration": 41.0
+  },
+  "Reach": {
+   "ads": 36,
+   "spend": 920204,
+   "engagement": 5433363,
+   "costPerEngagement": 0.1694,
+   "spendShare": 0.114,
+   "medianCtr": 0.305,
+   "medianRetention": 0.09971354762294775,
+   "medianDuration": 19.5
+  },
+  "Traffic": {
+   "ads": 55,
+   "spend": 1501857,
+   "engagement": 7874737,
+   "costPerEngagement": 0.1907,
+   "spendShare": 0.185,
+   "medianCtr": 0.18,
+   "medianRetention": 0.1036619197359299,
    "medianDuration": 32.0
+  },
+  "Lead Generation": {
+   "ads": 34,
+   "spend": 707092,
+   "engagement": 3518464,
+   "costPerEngagement": 0.201,
+   "spendShare": 0.087,
+   "medianCtr": 0.23,
+   "medianRetention": 0.0862722708012863,
+   "medianDuration": 30.5
   }
  },
- "byDuration": {
-  "16-30s": {
-   "ads": 1740,
-   "spend": 23885864.0,
-   "engagement": 34667695.0,
-   "costPerEngagement": 0.689,
-   "medianCtr": 0.3,
-   "medianRetention": 0.10695582113602793,
-   "medianDuration": 21.0
+ "matrix": {
+  "Video Views": {
+   "Entertainment & Media": {
+    "ads": 7,
+    "spend": 153796,
+    "engagement": 5286088,
+    "costPerEngagement": 0.0291,
+    "spendShare": null,
+    "medianCtr": 0.31,
+    "medianRetention": 0.1115809679673155,
+    "medianDuration": 31.0
+   },
+   "Games & Apps": {
+    "ads": 5,
+    "spend": 92536,
+    "engagement": 2429950,
+    "costPerEngagement": 0.0381,
+    "spendShare": null,
+    "medianCtr": 0.31,
+    "medianRetention": 0.1018008033287114,
+    "medianDuration": 31.0
+   },
+   "Beauty & Personal Care": {
+    "ads": 10,
+    "spend": 215379,
+    "engagement": 2039653,
+    "costPerEngagement": 0.1056,
+    "spendShare": null,
+    "medianCtr": 0.3,
+    "medianRetention": 0.09607808121405405,
+    "medianDuration": 42.5
+   },
+   "Food, Drink & Restaurants": {
+    "ads": 4,
+    "spend": 122520,
+    "engagement": 801963,
+    "costPerEngagement": 0.1528,
+    "spendShare": null,
+    "medianCtr": 0.73,
+    "medianRetention": 0.163847533352346,
+    "medianDuration": 13.267
+   }
   },
-  "31-60s": {
-   "ads": 1883,
-   "spend": 25178444.0,
-   "engagement": 28175595.0,
-   "costPerEngagement": 0.8936,
-   "medianCtr": 0.25,
-   "medianRetention": 0.06085651585634162,
-   "medianDuration": 45.0
+  "Reach": {
+   "Games & Apps": {
+    "ads": 5,
+    "spend": 92536,
+    "engagement": 2954681,
+    "costPerEngagement": 0.0313,
+    "spendShare": null,
+    "medianCtr": 0.24,
+    "medianRetention": 0.0832729195722726,
+    "medianDuration": 16.0
+   },
+   "Food, Drink & Restaurants": {
+    "ads": 6,
+    "spend": 183780,
+    "engagement": 700397,
+    "costPerEngagement": 0.2624,
+    "spendShare": null,
+    "medianCtr": 0.515,
+    "medianRetention": 0.11860815180623599,
+    "medianDuration": 16.0
+   },
+   "Beauty & Personal Care": {
+    "ads": 7,
+    "spend": 214410,
+    "engagement": 325497,
+    "costPerEngagement": 0.6587,
+    "spendShare": null,
+    "medianCtr": 0.21,
+    "medianRetention": 0.0782693193665725,
+    "medianDuration": 20.0
+   },
+   "Fashion & Accessories": {
+    "ads": 5,
+    "spend": 122843,
+    "engagement": 140264,
+    "costPerEngagement": 0.8758,
+    "spendShare": null,
+    "medianCtr": 0.13,
+    "medianRetention": 0.123206564563797,
+    "medianDuration": 30.0
+   }
   },
-  "60s+": {
-   "ads": 623,
-   "spend": 8399402.0,
-   "engagement": 25088217.0,
-   "costPerEngagement": 0.3348,
-   "medianCtr": 0.27,
-   "medianRetention": 0.05815166169266175,
-   "medianDuration": 90.0
+  "Conversion": {
+   "Entertainment & Media": {
+    "ads": 15,
+    "spend": 337905,
+    "engagement": 6007169,
+    "costPerEngagement": 0.0563,
+    "spendShare": null,
+    "medianCtr": 0.13,
+    "medianRetention": 0.1127974957204895,
+    "medianDuration": 55.0
+   },
+   "Finance, Legal & Services": {
+    "ads": 7,
+    "spend": 183786,
+    "engagement": 2416781,
+    "costPerEngagement": 0.076,
+    "spendShare": null,
+    "medianCtr": 0.11,
+    "medianRetention": 0.167352371732817,
+    "medianDuration": 25.0
+   },
+   "Games & Apps": {
+    "ads": 28,
+    "spend": 797026,
+    "engagement": 4628181,
+    "costPerEngagement": 0.1722,
+    "spendShare": null,
+    "medianCtr": 0.185,
+    "medianRetention": 0.1041195897792456,
+    "medianDuration": 25.5
+   },
+   "Food, Drink & Restaurants": {
+    "ads": 5,
+    "spend": 92536,
+    "engagement": 1223158,
+    "costPerEngagement": 0.0757,
+    "spendShare": null,
+    "medianCtr": 0.14,
+    "medianRetention": 0.1296692585690668,
+    "medianDuration": 32.0
+   },
+   "Fashion & Accessories": {
+    "ads": 27,
+    "spend": 340196,
+    "engagement": 2865835,
+    "costPerEngagement": 0.1187,
+    "spendShare": null,
+    "medianCtr": 0.13,
+    "medianRetention": 0.1597475177616945,
+    "medianDuration": 14.0
+   },
+   "Travel & Local Experiences": {
+    "ads": 7,
+    "spend": 214410,
+    "engagement": 1047294,
+    "costPerEngagement": 0.2047,
+    "spendShare": null,
+    "medianCtr": 0.22,
+    "medianRetention": 0.0968033724311422,
+    "medianDuration": 16.0
+   },
+   "Education": {
+    "ads": 6,
+    "spend": 61601,
+    "engagement": 1664890,
+    "costPerEngagement": 0.037,
+    "spendShare": null,
+    "medianCtr": 0.08,
+    "medianRetention": 0.1819375725526673,
+    "medianDuration": 40.0
+   },
+   "Health & Wellness": {
+    "ads": 4,
+    "spend": 92213,
+    "engagement": 523691,
+    "costPerEngagement": 0.1761,
+    "spendShare": null,
+    "medianCtr": 0.24000000000000002,
+    "medianRetention": 0.09293247521690595,
+    "medianDuration": 27.5
+   },
+   "Beauty & Personal Care": {
+    "ads": 10,
+    "spend": 245052,
+    "engagement": 709738,
+    "costPerEngagement": 0.3453,
+    "spendShare": null,
+    "medianCtr": 0.14,
+    "medianRetention": 0.1005958261165375,
+    "medianDuration": 43.0
+   },
+   "Home & Living": {
+    "ads": 7,
+    "spend": 32251,
+    "engagement": 378738,
+    "costPerEngagement": 0.0852,
+    "spendShare": null,
+    "medianCtr": 0.14,
+    "medianRetention": 0.1499434189122286,
+    "medianDuration": 12.0
+   },
+   "Electronics & Gadgets": {
+    "ads": 7,
+    "spend": 153479,
+    "engagement": 200511,
+    "costPerEngagement": 0.7654,
+    "spendShare": null,
+    "medianCtr": 0.11,
+    "medianRetention": 0.1258993954634303,
+    "medianDuration": 20.0
+   }
   },
-  "<=15s": {
-   "ads": 1119,
-   "spend": 12863905.0,
-   "engagement": 21412538.0,
-   "costPerEngagement": 0.6008,
-   "medianCtr": 0.3,
-   "medianRetention": 0.18230689495980093,
-   "medianDuration": 12.0
-  }
- },
- "byTier": {
-  "0": {
-   "ads": 1307,
-   "spend": 7842.0,
-   "engagement": 1475367.0,
-   "costPerEngagement": 0.0053,
-   "medianCtr": 0.64,
-   "medianRetention": 0.10863115891741845,
-   "medianDuration": 25.0
+  "Product Sales": {
+   "Fashion & Accessories": {
+    "ads": 8,
+    "spend": 123812,
+    "engagement": 2177428,
+    "costPerEngagement": 0.0569,
+    "spendShare": null,
+    "medianCtr": 0.12000000000000001,
+    "medianRetention": 0.09068124254819115,
+    "medianDuration": 38.0
+   },
+   "Beauty & Personal Care": {
+    "ads": 17,
+    "spend": 459779,
+    "engagement": 2920924,
+    "costPerEngagement": 0.1574,
+    "spendShare": null,
+    "medianCtr": 0.09,
+    "medianRetention": 0.1025885948992263,
+    "medianDuration": 40.0
+   },
+   "Electronics & Gadgets": {
+    "ads": 9,
+    "spend": 184115,
+    "engagement": 355888,
+    "costPerEngagement": 0.5173,
+    "spendShare": null,
+    "medianCtr": 0.1,
+    "medianRetention": 0.079423977383161,
+    "medianDuration": 49.0
+   },
+   "Games & Apps": {
+    "ads": 4,
+    "spend": 122520,
+    "engagement": 107238,
+    "costPerEngagement": 1.1425,
+    "spendShare": null,
+    "medianCtr": 0.07500000000000001,
+    "medianRetention": 0.08030499777314984,
+    "medianDuration": 40.0
+   },
+   "Home & Living": {
+    "ads": 6,
+    "spend": 122532,
+    "engagement": 104807,
+    "costPerEngagement": 1.1691,
+    "spendShare": null,
+    "medianCtr": 0.08499999999999999,
+    "medianRetention": 0.1889641157610405,
+    "medianDuration": 40.0
+   }
   },
-  "1": {
-   "ads": 1781,
-   "spend": 575263.0,
-   "engagement": 7831729.0,
-   "costPerEngagement": 0.0735,
-   "medianCtr": 0.28,
-   "medianRetention": 0.09769384400459531,
-   "medianDuration": 30.0
+  "Lead Generation": {
+   "Finance, Legal & Services": {
+    "ads": 10,
+    "spend": 275993,
+    "engagement": 727469,
+    "costPerEngagement": 0.3794,
+    "spendShare": null,
+    "medianCtr": 0.315,
+    "medianRetention": 0.0771230428206856,
+    "medianDuration": 31.5
+   },
+   "Home & Living": {
+    "ads": 4,
+    "spend": 61906,
+    "engagement": 149180,
+    "costPerEngagement": 0.415,
+    "spendShare": null,
+    "medianCtr": 0.065,
+    "medianRetention": 0.2007537831950206,
+    "medianDuration": 18.0
+   },
+   "Beauty & Personal Care": {
+    "ads": 4,
+    "spend": 122520,
+    "engagement": 124201,
+    "costPerEngagement": 0.9865,
+    "spendShare": null,
+    "medianCtr": 0.23,
+    "medianRetention": 0.07190201255893275,
+    "medianDuration": 52.0
+   }
   },
-  "2": {
-   "ads": 2277,
-   "spend": 69744510.0,
-   "engagement": 100036949.0,
-   "costPerEngagement": 0.6972,
-   "medianCtr": 0.19,
-   "medianRetention": 0.09370827979945323,
-   "medianDuration": 29.0
+  "App Install": {
+   "Games & Apps": {
+    "ads": 6,
+    "spend": 122849,
+    "engagement": 3592574,
+    "costPerEngagement": 0.0342,
+    "spendShare": null,
+    "medianCtr": 0.16499999999999998,
+    "medianRetention": 0.1199172204339779,
+    "medianDuration": 24.0
+   }
+  },
+  "Traffic": {
+   "Games & Apps": {
+    "ads": 12,
+    "spend": 367560,
+    "engagement": 3957366,
+    "costPerEngagement": 0.0929,
+    "spendShare": null,
+    "medianCtr": 0.185,
+    "medianRetention": 0.09977031063625635,
+    "medianDuration": 37.0
+   },
+   "Fashion & Accessories": {
+    "ads": 4,
+    "spend": 30648,
+    "engagement": 612421,
+    "costPerEngagement": 0.05,
+    "spendShare": null,
+    "medianCtr": 0.11000000000000001,
+    "medianRetention": 0.12358104052745934,
+    "medianDuration": 15.0
+   },
+   "Entertainment & Media": {
+    "ads": 6,
+    "spend": 123166,
+    "engagement": 1003302,
+    "costPerEngagement": 0.1228,
+    "spendShare": null,
+    "medianCtr": 0.15500000000000003,
+    "medianRetention": 0.13568902718313097,
+    "medianDuration": 30.0
+   },
+   "Food, Drink & Restaurants": {
+    "ads": 8,
+    "spend": 245040,
+    "engagement": 618900,
+    "costPerEngagement": 0.3959,
+    "spendShare": null,
+    "medianCtr": 0.27,
+    "medianRetention": 0.11977956188955166,
+    "medianDuration": 13.5
+   },
+   "Beauty & Personal Care": {
+    "ads": 10,
+    "spend": 306300,
+    "engagement": 744923,
+    "costPerEngagement": 0.4112,
+    "spendShare": null,
+    "medianCtr": 0.07500000000000001,
+    "medianRetention": 0.11531718907601175,
+    "medianDuration": 34.0
+   },
+   "Finance, Legal & Services": {
+    "ads": 4,
+    "spend": 122520,
+    "engagement": 169486,
+    "costPerEngagement": 0.7229,
+    "spendShare": null,
+    "medianCtr": 0.315,
+    "medianRetention": 0.0679521755163152,
+    "medianDuration": 32.0
+   }
   }
  },
  "population": {
-  "ads": 5365,
-  "modeledSpend": 70327615.0,
-  "engagement": 109344045.0
+  "ads": 352,
+  "spend": 8104917,
+  "engagement": 62323209,
+  "costPerEngagement": 0.13,
+  "spendShare": null,
+  "medianCtr": 0.17,
+  "medianRetention": 0.11162859286617924,
+  "medianDuration": 29.0
  }
 }

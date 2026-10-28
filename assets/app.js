@@ -1,416 +1,154 @@
 "use strict";
-/* TikTok Ads Studio — static, no build step. GitHub Pages safe.
-   One tile per ad. Slice "top" = oversample of highest-engaged;
-   slice "rep" = seeded representative sample (see data.json meta). */
+/* TikTok Ads Studio v4 — Decide + Browse. No labeling workflow.
+   Decide: slice stats, cost rankings, objective x industry matrix,
+   $10k benchmark comparison, verdict scaffold for the current slice. */
+const $ = (s, r = document) => r.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const fmtInt = (n) => n == null ? "—" : Math.round(n).toLocaleString("en-US");
+const fmtMoney = (n) => n == null ? "—" : "$" + (n >= 1000 ? Math.round(n).toLocaleString("en-US") : n.toFixed(2));
+const fmtCpe = (n) => n == null ? "—" : "$" + n.toFixed(3);
+const fmtPct = (n) => n == null ? "—" : (n * 100).toFixed(1) + "%";
+const med = (vals) => { const v = vals.filter((x) => x != null).sort((a, b) => a - b); return v.length ? v[Math.floor(v.length / 2)] : null; };
 
-const $ = (id) => document.getElementById(id);
-const state = {
-  rows: [], filtered: [], detailPos: 0, p75: {},
-  slice: new Set(), objective: new Set(), industry: new Set(),
-  tier: new Set(), duration: new Set(), tab: "all",
-};
-
-const DURATION_PARAMS = [
-  { key: "d15", label: "≤ 15s", match: (r) => r.duration != null && r.duration <= 15 },
-  { key: "d30", label: "16–30s", match: (r) => r.duration > 15 && r.duration <= 30 },
-  { key: "d60", label: "31–60s", match: (r) => r.duration > 30 && r.duration <= 60 },
-  { key: "d61", label: "60s+", match: (r) => r.duration > 60 },
+const state = { rows: [], seg: null, industry: "", objective: "", query: "", sort: "engagement-desc", detailList: [], detailIdx: 0 };
+const BENCH = [
+  ["Meta (enter eMarketer CPM)", ""],
+  ["YouTube (enter eMarketer CPM)", ""],
+  ["CTV / streaming (enter eMarketer CPM)", ""],
+  ["Search (enter eMarketer CPM)", ""],
 ];
-const SLICE_PARAMS = [
-  { key: "top", label: "★ Top-engaged oversample", match: (r) => r.slice === "top" },
-  { key: "rep", label: "Representative slice", match: (r) => r.slice === "rep" },
-];
-const TABS = [
-  { key: "all", label: "All ads", match: () => true },
-  { key: "top", label: "★ Most engaged", match: (r) => r.slice === "top" },
-  { key: "rep", label: "Typical ads", match: (r) => r.slice === "rep" },
-  { key: "winners", label: "High CTR + retention", match: (r) => r.ctr != null && r.retention != null && state.p75.ctr != null && r.ctr >= state.p75.ctr && r.retention >= state.p75.retention },
+const FIELD_NOTES = [
+  ["Subaru on Trade Desk (real export, this semester)", 3.14],
+  ["Display — Peter Brinkman field note", 2.35],
+  ["Premium video / CTV — Peter Brinkman field note", 46.50],
+  ["Netflix (class anecdote)", 65],
+  ["Local TV (class anecdote)", 32],
+  ["OOH (class anecdote)", 4.80],
 ];
 
-const esc = (s) => String(s == null ? "" : s)
-  .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-  .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
-const humanObjective = (o) => String(o || "").replace("campaign_objective_", "").replace(/_/g, " ") || "—";
-const brandName = (r) => r.brand || "Unknown brand";
-const fmtInt = (n) => n == null ? "—" : Math.round(Number(n)).toLocaleString("en-US");
-const fmtCompact = (n) => {
-  if (n == null) return "—";
-  const v = Number(n);
-  if (v >= 1e6) return (v / 1e6).toFixed(1).replace(/\.0$/, "") + "M";
-  if (v >= 1e3) return (v / 1e3).toFixed(1).replace(/\.0$/, "") + "K";
-  return String(Math.round(v));
-};
-const fmtMoney = (n) => n == null ? "—" : "$" + Math.round(Number(n)).toLocaleString("en-US");
-const fmtPct = (n) => n == null ? "—" : (Number(n) <= 1 ? (Number(n) * 100).toFixed(1) : Number(n).toFixed(1)) + "%";
-const fmtDur = (s) => {
-  if (s == null) return "—";
-  const m = Math.floor(s / 60), sec = Math.round(s % 60);
-  return m + ":" + String(sec).padStart(2, "0");
-};
-
-let toastTimer = null;
-function toast(msg) {
-  const t = $("toast");
-  t.textContent = msg; t.hidden = false;
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { t.hidden = true; }, 2600);
+function sliceRows() {
+  return state.rows.filter((r) =>
+    (!state.industry || r.industry === state.industry) &&
+    (!state.objective || r.objectiveLabel === state.objective));
 }
-function percentile(vals, p) {
-  const v = vals.filter((x) => x != null).sort((a, b) => a - b);
-  if (!v.length) return null;
-  return v[Math.min(v.length - 1, Math.floor(p * v.length))];
+function statsOf(rows) {
+  const spend = rows.reduce((a, r) => a + (r.spendPoint || 0), 0);
+  const eng = rows.reduce((a, r) => a + (r.engagement || 0), 0);
+  return { n: rows.length, spend, eng, cpe: eng ? spend / eng : null,
+    ctr: med(rows.map((r) => r.ctr)), retention: med(rows.map((r) => r.retention)) };
 }
-
-/* ---------------- filtering + sorting ---------------- */
-const SORTS = {
-  "engagement-desc": (a, b) => (b.engagement ?? -1) - (a.engagement ?? -1),
-  "ctr-desc": (a, b) => (b.ctr ?? -1) - (a.ctr ?? -1),
-  "retention-desc": (a, b) => (b.retention ?? -1) - (a.retention ?? -1),
-  "spend-desc": (a, b) => (b.spendHi ?? -1) - (a.spendHi ?? -1),
-  "likes-desc": (a, b) => (b.likes ?? -1) - (a.likes ?? -1),
-  "shares-desc": (a, b) => (b.shares ?? -1) - (a.shares ?? -1),
-  "duration-asc": (a, b) => (a.duration ?? 1e9) - (b.duration ?? 1e9),
-  "duration-desc": (a, b) => (b.duration ?? -1) - (a.duration ?? -1),
-  "brand-asc": (a, b) => String(a.brand).localeCompare(String(b.brand)),
-};
-
-function applyFilters() {
-  const q = $("search").value.trim().toLowerCase();
-  const sortFn = SORTS[$("sortSel").value] || SORTS["engagement-desc"];
-  const tab = TABS.find((t) => t.key === state.tab) || TABS[0];
-  state.filtered = state.rows.filter((r) => {
-    if (!tab.match(r)) return false;
-    if (state.slice.size && !SLICE_PARAMS.some((p) => state.slice.has(p.key) && p.match(r))) return false;
-    if (state.objective.size && !state.objective.has(r.objective)) return false;
-    if (state.industry.size && !state.industry.has(r.industry)) return false;
-    if (state.tier.size && !state.tier.has(r.tier)) return false;
-    if (state.duration.size && !DURATION_PARAMS.some((p) => state.duration.has(p.key) && p.match(r))) return false;
-    if (q) {
-      const hay = `${r.id} ${r.title} ${r.brand} ${r.industry} ${r.objective}`;
-      if (!hay.toLowerCase().includes(q)) return false;
+function rankTable(title, groups) {
+  const entries = Object.entries(groups).sort((a, b) => (a[1].costPerEngagement ?? 1e9) - (b[1].costPerEngagement ?? 1e9));
+  return `<table class="rank"><thead><tr><th>${esc(title)}</th><th>Ads</th><th>Spend share</th><th>Cost / engagement</th><th>Median CTR</th><th>Median retention</th></tr></thead><tbody>` +
+    entries.map(([k, v], i) => `<tr class="${i === 0 ? "rank-top" : ""}"><td>${esc(k)}</td><td>${v.ads}</td><td>${(100 * (v.spendShare || 0)).toFixed(0)}%</td><td>${fmtCpe(v.costPerEngagement)}</td><td>${fmtPct(v.medianCtr)}</td><td>${fmtPct(v.medianRetention)}</td></tr>`).join("") +
+    `</tbody></table>`;
+}
+function renderDecide() {
+  const rows = sliceRows();
+  const s = statsOf(rows);
+  $("#sliceStats").textContent = `${s.n} ads · ${fmtMoney(s.spend)} modeled · ${fmtCpe(s.cpe)} / engagement · CTR ${fmtPct(s.ctr)} · retention ${fmtPct(s.retention)}`;
+  $("#rankIndustry").innerHTML = rankTable("Industry", state.seg.byIndustry);
+  $("#rankObjective").innerHTML = rankTable("Objective", state.seg.byObjective);
+  // matrix
+  const inds = Object.keys(state.seg.byIndustry);
+  const objs = Object.keys(state.seg.byObjective);
+  const mat = state.seg.matrix;
+  let html = `<table class="rank matrix"><thead><tr><th>Objective ↓ · Industry →</th>${inds.map((i) => `<th>${esc(i)}</th>`).join("")}</tr></thead><tbody>`;
+  for (const o of objs) {
+    html += `<tr><td>${esc(o)}</td>`;
+    for (const i of inds) {
+      const c = (mat[o] || {})[i];
+      html += c ? `<td class="${c.costPerEngagement < 0.1 ? "cell-cheap" : c.costPerEngagement > 0.3 ? "cell-dear" : ""}" title="${c.ads} ads">${fmtCpe(c.costPerEngagement)}<span class="cell-n">n=${c.ads}</span></td>` : `<td class="cell-empty">—</td>`;
     }
-    return true;
-  }).sort(sortFn);
-  $("resultCount").textContent = `${state.filtered.length} of ${state.rows.length} ads`;
-  $("reelBtn").textContent = `▶ Play reel · ${state.filtered.length}`;
-  renderGrid();
-}
-
-function clearAll() {
-  $("search").value = "";
-  for (const s of [state.slice, state.objective, state.industry, state.tier, state.duration]) s.clear();
-  document.querySelectorAll(".wall .chip").forEach((c) => c.setAttribute("aria-pressed", "false"));
-  setTab("all");
-}
-
-function setTab(key) {
-  state.tab = key;
-  document.querySelectorAll("#sliceTabs .goaltab").forEach((b) => {
-    b.setAttribute("aria-selected", b.dataset.tab === key ? "true" : "false");
-  });
-  applyFilters();
-}
-function buildTabs() {
-  $("sliceTabs").innerHTML = TABS.map((t) => {
-    const n = state.rows.filter(t.match).length;
-    return `<button class="goaltab" role="tab" data-tab="${esc(t.key)}" aria-selected="${t.key === state.tab}" type="button">${esc(t.label)}<span class="tab-n">${n}</span></button>`;
-  }).join("");
-  $("sliceTabs").querySelectorAll(".goaltab").forEach((b) => {
-    b.addEventListener("click", () => setTab(b.dataset.tab));
-  });
-}
-
-function buildWall(elId, params, set) {
-  $(elId).innerHTML = params.map((p) =>
-    `<button type="button" class="chip" data-key="${esc(p.key)}" aria-pressed="false">${esc(p.label)}<span class="chip-n">${p.n}</span></button>`
-  ).join("");
-  $(elId).querySelectorAll(".chip").forEach((chip) => {
-    chip.addEventListener("click", () => {
-      const on = chip.getAttribute("aria-pressed") === "true";
-      chip.setAttribute("aria-pressed", on ? "false" : "true");
-      if (on) set.delete(chip.dataset.key); else set.add(chip.dataset.key);
-      applyFilters();
-    });
-  });
-}
-function countWall(rows, keyFn, limit) {
-  const m = new Map();
-  for (const r of rows) { const k = keyFn(r); m.set(k, (m.get(k) || 0) + 1); }
-  return [...m.entries()].sort((a, b) => b[1] - a[1] || String(a[0]).localeCompare(String(b[0])))
-    .slice(0, limit || 99).map(([key, n]) => ({ key, label: key, n }));
-}
-function buildWalls() {
-  buildWall("sliceWall", SLICE_PARAMS.map((p) => ({ ...p, n: state.rows.filter(p.match).length })), state.slice);
-  buildWall("objectiveWall", countWall(state.rows, (r) => r.objective), state.objective);
-  buildWall("industryWall", countWall(state.rows, (r) => r.industry, 14), state.industry);
-  buildWall("tierWall", countWall(state.rows, (r) => r.tier), state.tier);
-  buildWall("durationWall", DURATION_PARAMS.map((p) => ({ ...p, n: state.rows.filter(p.match).length })), state.duration);
-}
-
-/* ---------------- grid ---------------- */
-function metricMini(name, val, max, fmt) {
-  const pct = val == null ? 0 : Math.max(0, Math.min(100, (val / max) * 100));
-  const hot = val != null && state.p75[name] != null && val >= state.p75[name] ? " hot" : "";
-  return `<div class="metric-mini"><div class="mm-label"><span>${name}</span><b>${val == null ? "—" : fmt(val)}</b></div>` +
-    `<div class="mm-bar"><div class="mm-fill${hot}" style="width:${pct.toFixed(1)}%"></div></div></div>`;
-}
-function spendLine(r) {
-  if (r.spendPoint == null) return "modeled spend n/a";
-  return `modeled spend ≈ ${fmtMoney(r.spendPoint)} · tier ${esc(r.tier)}`;
-}
-function renderGrid() {
-  const grid = $("grid");
-  if (!state.filtered.length) {
-    grid.innerHTML = `<div class="empty-note">No ads match these filters. <button class="btn btn-ghost" id="clearFiltersEmpty" type="button">Clear filters</button></div>`;
-    $("clearFiltersEmpty").addEventListener("click", clearAll);
-    return;
+    html += `</tr>`;
   }
-  const maxEng = Math.max(...state.rows.map((r) => r.engagement || 0), 1);
-  grid.innerHTML = state.filtered.map((r) => {
-    const top = r.slice === "top" ? `<span class="degen-tick" style="background:var(--signal)">★ top ${r.rank}</span>` : "";
-    return `<article class="card" tabindex="0" data-id="${esc(r.id)}" aria-label="${esc(r.brand)} — ${esc(r.title)}">
-      <div class="poster-wrap">
-        <img src="${esc(r.poster)}" alt="" loading="lazy" onerror="this.outerHTML='<div class=&quot;poster-fallback&quot;>poster pending</div>'">
-        ${top}
-        <span class="dur-badge">${fmtDur(r.duration)}</span>
-        <span class="play-hint">▶ watch</span>
-      </div>
-      <div class="card-body">
-        <div class="card-idrow"><span class="card-rowid">${esc(brandName(r))}</span><span class="goal-chip ${r.slice === "top" ? "goal-CTR" : "goal-none"}">${r.slice === "top" ? "top-engaged" : "representative"}</span></div>
-        <h3 class="card-title">${esc(r.title || r.brand)}</h3>
-        <div class="card-theme">${esc(humanObjective(r.objective))} objective</div>
-        ${metricMini("engagement", r.engagement, maxEng, fmtCompact)}
-        ${metricMini("ctr", r.ctr, state.p75.ctr ? state.p75.ctr * 1.6 : 1, fmtPct)}
-        ${metricMini("retention", r.retention, state.p75.retention ? state.p75.retention * 1.6 : 1, fmtPct)}
-        <div class="card-target" title="${esc(spendLine(r))}">${esc(spendLine(r))}</div>
-      </div>
-    </article>`;
-  }).join("");
-  grid.querySelectorAll(".card").forEach((card) => {
-    card.addEventListener("click", () => openDetail(card.dataset.id));
-    card.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openDetail(card.dataset.id); }
-    });
-  });
+  $("#matrixWrap").innerHTML = html + `</tbody></table>`;
+  // benchmarks
+  const tiktokRow = `<tr class="rank-top"><td>TikTok (current slice)</td><td>${fmtCpe(s.cpe)} / engagement</td><td>${s.cpe ? fmtInt(10000 / s.cpe) + " engagements" : "—"}</td></tr>`;
+  const inputs = BENCH.map(([name], i) => `<tr><td>${esc(name)}</td><td><input class="bench-in" data-i="${i}" type="number" min="0" step="0.01" placeholder="CPM $"> / 1,000 impressions</td><td class="bench-out" data-i="${i}">—</td></tr>`).join("");
+  const notes = FIELD_NOTES.map(([n, c]) => `<tr><td>${esc(n)} — field note, not a benchmark</td><td>$${c.toFixed(2)} CPM</td><td>${fmtInt(10000 / c * 1000)} impressions</td></tr>`).join("");
+  $("#benchWrap").innerHTML = `<table class="rank"><thead><tr><th>Channel</th><th>Price</th><th>$10,000 buys</th></tr></thead><tbody>${tiktokRow}${inputs}${notes}</tbody></table>`;
+  document.querySelectorAll(".bench-in").forEach((inp) => inp.addEventListener("input", () => {
+    const cpm = parseFloat(inp.value);
+    const out = document.querySelector(`.bench-out[data-i="${inp.dataset.i}"]`);
+    out.textContent = cpm > 0 ? fmtInt(10000 / cpm * 1000) + " impressions" : "—";
+  }));
+  // verdict scaffold
+  const all = statsOf(state.rows);
+  const cheaper = s.cpe != null && all.cpe != null ? (100 * (1 - s.cpe / all.cpe)) : null;
+  const where = `${state.industry || "All industries"} × ${state.objective || "all objectives"}`;
+  $("#verdict").innerHTML = `<p><strong>${esc(where)}:</strong> ${s.n} ads at ${fmtCpe(s.cpe)} per engagement` +
+    (cheaper != null ? ` — ${cheaper >= 0 ? cheaper.toFixed(0) + "% cheaper" : Math.abs(cheaper).toFixed(0) + "% more expensive"} than the full sample (${fmtCpe(all.cpe)})` : "") +
+    `. Median CTR ${fmtPct(s.ctr)} (sample ${fmtPct(all.ctr)}), retention ${fmtPct(s.retention)} (sample ${fmtPct(all.retention)}).</p>` +
+    `<p>Answer in your page: for this industry and goal, does TikTok beat the CPM channels above on a comparable basis — and what would have to be true about engagement value for that to hold? Name the brand you would fund, and the cell that proves it.</p>`;
 }
-
-/* ---------------- detail view ---------------- */
-function detailHTML(r) {
-  const sibs = state.rows.filter((x) => x.id !== r.id && x.brand === r.brand).slice(0, 8);
-  const shareShare = r.engagement ? (100 * (r.shares || 0) / r.engagement) : null;
-  return `
-    <h2 class="detail-title">${esc(r.title || r.brand)}</h2>
-    <div class="detail-sub"><span class="card-rowid">${esc(brandName(r))}</span>
-      <span class="tchip">objective: ${esc(humanObjective(r.objective))}</span>
-      <span class="tchip">${r.slice === "top" ? `★ top-engaged #${r.rank}` : "representative slice"}</span>
-    </div>
-    <div class="detail-cols">
-      <div>
-        <div class="video-shell"><video controls preload="metadata" poster="${esc(r.poster)}" src="${esc(r.mp4)}"></video></div>
-        <div class="creative-facts">
-          <span class="fact-chip">${fmtDur(r.duration)} runtime</span>
-          <span class="fact-chip">ad ${esc(String(r.id).slice(0, 12))}…</span>
-        </div>
-        <div class="panel" style="margin-top:14px"><h3>Talk about it</h3>
-          <ul class="interest-list">
-            <li>What happens in the first three seconds — and who is it for?</li>
-            <li>Do the numbers fit the creative? Where would this ad fatigue first?</li>
-            <li>If this were your client's money, what is the one test you run next?</li>
-          </ul>
-        </div>
-      </div>
-      <div>
-        <div class="panel"><h3>Numbers</h3>
-          <div class="big-metrics">
-            <div class="big-metric"><div class="bm-val">${fmtCompact(r.engagement)}</div><div class="bm-name">Engagement (likes+shares+favorites)</div></div>
-            <div class="big-metric"><div class="bm-val">${fmtPct(r.ctr)}</div><div class="bm-name">CTR, as provided</div></div>
-            <div class="big-metric"><div class="bm-val">${fmtPct(r.retention)}</div><div class="bm-name">Mean retention, as provided</div></div>
-          </div>
-          <table class="kv-table"><tbody>
-            <tr><td>Likes / Shares / Favorites</td><td>${fmtInt(r.likes)} / ${fmtInt(r.shares)} / ${fmtInt(r.favorites)}</td></tr>
-            <tr><td>Shares as % of engagement</td><td>${shareShare == null ? "—" : shareShare.toFixed(1) + "%"}</td></tr>
-            <tr><td>Modeled spend (tier estimate)</td><td>≈ ${fmtMoney(r.spendPoint)}</td></tr>
-            <tr><td>Spend tier</td><td>${esc(r.tier)}</td></tr>
-            <tr><td>Duration</td><td>${r.duration == null ? "—" : r.duration.toFixed(0) + "s"}</td></tr>
-          </tbody></table>
-          <p class="daypart-note">Spend is the dataset's modeled band, not an invoice. Engagement counts scale with spend — compare rates and retention before crowning a winner.</p>
-        </div>
-        <div class="panel"><h3>More from ${esc(r.brand)}</h3>
-          ${sibs.length ? `<div class="sib-row">${sibs.map((s) => `<button class="sib-btn" data-sib="${esc(s.id)}" type="button">${esc(s.title || s.id)} · ${fmtCompact(s.engagement)}</button>`).join("")}</div>` : `<p class="daypart-note" style="margin-top:0">Only this ${esc(r.brand)} ad is in the slice.</p>`}
-        </div>
-      </div>
-    </div>`;
+function card(r) {
+  return `<article class="card" data-id="${esc(r.id)}" tabindex="0">
+    <div class="poster-wrap"><img src="${esc(r.poster)}" alt="" loading="lazy" onerror="this.outerHTML='<div class=&quot;poster-fallback&quot;>poster pending</div>'"><span class="dur-badge">${r.duration ? Math.round(r.duration) + "s" : ""}</span></div>
+    <div class="card-body">
+      <div class="card-brand">${esc(r.brand || "—")}</div>
+      <div class="card-title">${esc(r.title || "")}</div>
+      <div class="card-meta">${esc(r.industry)} · ${esc(r.objectiveLabel)}</div>
+      <div class="card-nums"><span>${fmtCpe(r.cpe)} / eng</span><span>CTR ${fmtPct(r.ctr)}</span><span>${fmtInt(r.engagement)} eng</span></div>
+    </div></article>`;
 }
-
+function renderBrowse() {
+  let rows = sliceRows().filter((r) => !state.query || (r.brand + " " + r.title).toLowerCase().includes(state.query));
+  const by = { "engagement-desc": (a, b) => (b.engagement || 0) - (a.engagement || 0), "cpe-asc": (a, b) => (a.cpe ?? 1e9) - (b.cpe ?? 1e9),
+    "ctr-desc": (a, b) => (b.ctr || 0) - (a.ctr || 0), "retention-desc": (a, b) => (b.retention || 0) - (a.retention || 0), "spend-desc": (a, b) => (b.spendPoint || 0) - (a.spendPoint || 0) };
+  rows = rows.sort(by[state.sort] || by["engagement-desc"]);
+  state.detailList = rows;
+  $("#resultCount").textContent = `${rows.length} ads`;
+  $("#grid").innerHTML = rows.map(card).join("");
+  document.querySelectorAll(".card").forEach((el) => el.addEventListener("click", () => openDetail(el.dataset.id)));
+}
 function openDetail(id) {
-  const pos = state.filtered.findIndex((r) => r.id === id);
-  state.detailPos = pos >= 0 ? pos : 0;
-  renderDetail();
-  $("detailOverlay").hidden = false;
-  document.body.style.overflow = "hidden";
+  const i = state.detailList.findIndex((r) => r.id === id);
+  if (i < 0) return;
+  state.detailIdx = i;
+  const r = state.detailList[i];
+  $("#detailId").textContent = `${i + 1} / ${state.detailList.length} · ${r.brand || r.id}`;
+  $("#detailBody").innerHTML = `<div class="video-shell"><video controls preload="metadata" poster="${esc(r.poster)}" src="${esc(r.mp4)}"></video></div>
+    <h3>${esc(r.title || "")}</h3>
+    <p>${esc(r.brand || "—")} · ${esc(r.industry)} · ${esc(r.objectiveLabel)} · spend tier ${esc(r.tier)}</p>
+    <table class="rank"><tbody>
+    <tr><td>Modeled spend</td><td>${fmtMoney(r.spendPoint)}</td></tr>
+    <tr><td>Engagement (likes+shares+favorites)</td><td>${fmtInt(r.engagement)} (${fmtInt(r.likes)} + ${fmtInt(r.shares)} + ${fmtInt(r.favorites)})</td></tr>
+    <tr><td>Cost per engagement</td><td>${fmtCpe(r.cpe)}</td></tr>
+    <tr><td>CTR (as provided)</td><td>${fmtPct(r.ctr)}</td></tr>
+    <tr><td>Retention (relative)</td><td>${fmtPct(r.retention)}</td></tr>
+    <tr><td>Duration</td><td>${r.duration ? Math.round(r.duration) + "s" : "—"}</td></tr></tbody></table>`;
+  $("#detailOverlay").hidden = false;
 }
-function renderDetail() {
-  const r = state.filtered[state.detailPos];
-  if (!r) return;
-  $("detailId").textContent = `${state.detailPos + 1} of ${state.filtered.length} in this view · ${r.slice === "top" ? "top-engaged" : "representative"}`;
-  $("detailBody").innerHTML = detailHTML(r);
-  $("detailBody").scrollTop = 0;
-  $("prevBtn").disabled = state.detailPos <= 0;
-  $("nextBtn").disabled = state.detailPos >= state.filtered.length - 1;
-  const video = $("detailBody").querySelector("video");
-  if (video) {
-    video.addEventListener("error", () => {
-      video.outerHTML = `<div class="poster-fallback" style="aspect-ratio:9/16">Video not in this staging yet — publish pack adds <br><span style="font-size:11px">${esc(r.mp4)}</span></div>`;
-    }, true);
-  }
-  $("detailBody").querySelectorAll("[data-sib]").forEach((b) => {
-    b.addEventListener("click", () => {
-      const p = state.filtered.findIndex((x) => x.id === b.dataset.sib);
-      if (p >= 0) { state.detailPos = p; renderDetail(); }
-      else toast("That ad is outside the current filters");
-    });
-  });
+function stepDetail(d) {
+  const n = state.detailList.length;
+  if (!n) return;
+  openDetail(state.detailList[(state.detailIdx + d + n) % n].id);
 }
-function closeDetail() {
-  $("detailOverlay").hidden = true;
-  document.body.style.overflow = "";
-  $("detailBody").innerHTML = "";
-}
-
-/* ---------------- reel ---------------- */
-const reel = { list: [], pos: 0, skipTimer: null, skipLeft: 0 };
-function reelTimeStr(s) {
-  if (!isFinite(s) || s == null) return "0:00";
-  const m = Math.floor(s / 60), sec = Math.floor(s % 60);
-  return m + ":" + String(sec).padStart(2, "0");
-}
-function reelSetPlayIcon(playing) {
-  $("reelPlayIcon").innerHTML = playing
-    ? '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>'
-    : '<path d="M8 5v14l11-7z"/>';
-}
-function reelArmSkip() {
-  clearInterval(reel.skipTimer);
-  const box = $("skipBox");
-  box.hidden = false; box.classList.remove("ready"); box.onclick = null;
-  reel.skipLeft = 5;
-  box.textContent = `Skip Ad in ${reel.skipLeft}`;
-  reel.skipTimer = setInterval(() => {
-    reel.skipLeft -= 1;
-    if (reel.skipLeft <= 0) {
-      clearInterval(reel.skipTimer);
-      box.classList.add("ready");
-      box.innerHTML = `<span class="skip-go">Skip Ad ▶</span>`;
-      box.onclick = () => reelStep(1);
-    } else box.textContent = `Skip Ad in ${reel.skipLeft}`;
-  }, 1000);
-}
-function reelLoad(i) {
-  const r = reel.list[i];
-  if (!r) return;
-  reel.pos = i;
-  const v = $("reelVideo");
-  v.poster = r.poster; v.src = r.mp4;
-  $("reelTitle").textContent = `${brandName(r)} — ${r.title || ""}`;
-  $("reelCount").textContent = `${i + 1} of ${reel.list.length} · ${fmtCompact(r.engagement)} engagement · CTR ${fmtPct(r.ctr)}`;
-  document.querySelectorAll(".reel-qitem").forEach((el, j) => el.classList.toggle("active", j === i));
-  const active = document.querySelector(".reel-qitem.active");
-  if (active) active.scrollIntoView({ block: "nearest" });
-  v.play().then(() => reelSetPlayIcon(true)).catch(() => reelSetPlayIcon(false));
-  reelArmSkip();
-}
-function reelStep(d) {
-  const n = reel.pos + d;
-  if (n < 0 || n >= reel.list.length) return;
-  reelLoad(n);
-}
-function openReel() {
-  if (!state.filtered.length) { toast("Nothing to play — clear the filters"); return; }
-  reel.list = state.filtered.slice();
-  $("reelQueue").innerHTML = reel.list.map((r, i) =>
-    `<button class="reel-qitem" data-i="${i}" type="button"><img src="${esc(r.poster)}" alt="" loading="lazy"><span class="reel-qmeta"><span class="reel-qtitle">${esc(r.brand)} — ${esc(r.title || "")}</span><span class="reel-qsub">${fmtCompact(r.engagement)} eng · ${fmtDur(r.duration)}</span></span></button>`).join("");
-  $("reelQueue").querySelectorAll(".reel-qitem").forEach((el) => {
-    el.addEventListener("click", () => reelLoad(Number(el.dataset.i)));
-  });
-  $("reelOverlay").hidden = false;
-  document.body.style.overflow = "hidden";
-  reelLoad(0);
-}
-function closeReel() {
-  clearInterval(reel.skipTimer);
-  const v = $("reelVideo");
-  v.pause(); v.removeAttribute("src"); v.load();
-  $("skipBox").hidden = true;
-  $("reelOverlay").hidden = true;
-  document.body.style.overflow = "";
-}
-
-/* ---------------- init ---------------- */
 async function init() {
-  let data;
-  try {
-    const res = await fetch("data/data.json");
-    data = await res.json();
-  } catch (e) {
-    $("grid").innerHTML = `<div class="empty-note">Could not load data/data.json — serve this folder over HTTP (not file://).</div>`;
-    return;
-  }
-  state.rows = data.rows || [];
-  const m = data.meta || {};
-  state.p75 = {
-    ctr: percentile(state.rows.map((r) => r.ctr), 0.75),
-    retention: percentile(state.rows.map((r) => r.retention), 0.75),
-    engagement: percentile(state.rows.map((r) => r.engagement), 0.75),
-  };
-  $("statChips").innerHTML =
-    `<span class="stat-chip"><strong>${state.rows.length}</strong> ads with video</span>` +
-    `<span class="stat-chip"><strong>${m.topN ?? ""}</strong> top-engaged oversample</span>` +
-    `<span class="stat-chip"><strong>${m.repN ?? ""}</strong> representative</span>` +
-    `<span class="stat-chip">from <strong>${fmtInt(m.population)}</strong> video ads</span>`;
-  const about = $("aboutData");
-  if (about && m.sampling) {
-    about.innerHTML = `<li>${esc(m.sampling)}</li>` +
-      `<li>Population: ${fmtInt(m.population)} ads with video creative in the course dataset. Median engagement in the population: ${fmtCompact(m.populationEngagementMedian)}.</li>` +
-      `<li>Videos are the real ad creatives, compressed for the web. Posters are frames from the actual videos.</li>`;
-  }
-  buildTabs(); buildWalls();
-  $("search").addEventListener("input", applyFilters);
-  $("sortSel").addEventListener("change", applyFilters);
-  $("clearFilters").addEventListener("click", clearAll);
-  document.querySelectorAll('#themeList input').forEach(() => {});
-  $("closeBtn").addEventListener("click", closeDetail);
-  $("prevBtn").addEventListener("click", () => { if (state.detailPos > 0) { state.detailPos -= 1; renderDetail(); } });
-  $("nextBtn").addEventListener("click", () => { if (state.detailPos < state.filtered.length - 1) { state.detailPos += 1; renderDetail(); } });
-  $("detailOverlay").addEventListener("click", (e) => { if (e.target === $("detailOverlay")) closeDetail(); });
-  $("reelBtn").addEventListener("click", openReel);
-  $("reelClose").addEventListener("click", closeReel);
-  $("reelPrev").addEventListener("click", () => reelStep(-1));
-  $("reelNext").addEventListener("click", () => reelStep(1));
-  const v = $("reelVideo");
-  $("reelPlay").addEventListener("click", () => { if (v.paused) v.play(); else v.pause(); });
-  v.addEventListener("play", () => reelSetPlayIcon(true));
-  v.addEventListener("pause", () => reelSetPlayIcon(false));
-  v.addEventListener("ended", () => { if (reel.pos < reel.list.length - 1) reelLoad(reel.pos + 1); });
-  v.addEventListener("timeupdate", () => {
-    $("reelTime").textContent = `${reelTimeStr(v.currentTime)} / ${reelTimeStr(v.duration)}`;
-    if (v.duration) $("reelScrub").value = String(Math.round(1000 * v.currentTime / v.duration));
-  });
-  $("reelScrub").addEventListener("input", (e) => { if (v.duration) v.currentTime = v.duration * Number(e.target.value) / 1000; });
-  $("reelMute").addEventListener("click", () => { v.muted = !v.muted; toast(v.muted ? "Muted" : "Sound on"); });
-  $("reelFull").addEventListener("click", () => { const s = $("reelStage"); if (document.fullscreenElement) document.exitFullscreen(); else if (s.requestFullscreen) s.requestFullscreen(); });
-  document.addEventListener("keydown", (e) => {
-    if (!$("reelOverlay").hidden) {
-      if (e.key === "Escape") closeReel();
-      else if (e.key === "ArrowRight") reelStep(1);
-      else if (e.key === "ArrowLeft") reelStep(-1);
-      else if (e.key === " ") { e.preventDefault(); if (v.paused) v.play(); else v.pause(); }
-    } else if (!$("detailOverlay").hidden) {
-      if (e.key === "Escape") closeDetail();
-      else if (e.key === "ArrowRight" && state.detailPos < state.filtered.length - 1) { state.detailPos += 1; renderDetail(); }
-      else if (e.key === "ArrowLeft" && state.detailPos > 0) { state.detailPos -= 1; renderDetail(); }
-    }
-  });
-  applyFilters();
+  const [data, seg] = await Promise.all([
+    (await fetch("data/data.json")).json(),
+    (await fetch("data/segments.json")).json(),
+  ]);
+  state.rows = data.rows; state.seg = seg;
+  $("#statChips").innerHTML = `<span class="stat-chip"><strong>${data.rows.length}</strong> US-English ads</span><span class="stat-chip"><strong>${Object.keys(seg.byIndustry).length}</strong> industries</span><span class="stat-chip"><strong>${Object.keys(seg.byObjective).length}</strong> objectives</span>`;
+  const fi = $("#fIndustry"), fo = $("#fObjective");
+  Object.keys(seg.byIndustry).sort().forEach((k) => fi.insertAdjacentHTML("beforeend", `<option>${esc(k)}</option>`));
+  Object.keys(seg.byObjective).forEach((k) => fo.insertAdjacentHTML("beforeend", `<option>${esc(k)}</option>`));
+  fi.addEventListener("change", () => { state.industry = fi.value; renderDecide(); renderBrowse(); });
+  fo.addEventListener("change", () => { state.objective = fo.value; renderDecide(); renderBrowse(); });
+  $("#search").addEventListener("input", (e) => { state.query = e.target.value.trim().toLowerCase(); renderBrowse(); });
+  $("#sortSel").addEventListener("change", (e) => { state.sort = e.target.value; renderBrowse(); });
+  $("#decideTab").addEventListener("click", () => switchView(true));
+  $("#browseTab").addEventListener("click", () => switchView(false));
+  $("#closeBtn").addEventListener("click", () => { $("#detailOverlay").hidden = true; });
+  $("#prevBtn").addEventListener("click", () => stepDetail(-1));
+  $("#nextBtn").addEventListener("click", () => stepDetail(1));
+  document.addEventListener("keydown", (e) => { if (!$("#detailOverlay").hidden && e.key === "Escape") $("#detailOverlay").hidden = true; });
+  renderDecide(); renderBrowse();
 }
-document.addEventListener("DOMContentLoaded", init);
-
+function switchView(decide) {
+  $("#decideView").hidden = !decide; $("#browseView").hidden = decide;
+  $("#decideTab").setAttribute("aria-selected", decide); $("#browseTab").setAttribute("aria-selected", !decide);
+}
+init();
