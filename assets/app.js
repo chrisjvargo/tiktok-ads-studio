@@ -11,13 +11,6 @@ const fmtPct = (n) => n == null ? "—" : (n * 100).toFixed(1) + "%";
 const med = (vals) => { const v = vals.filter((x) => x != null).sort((a, b) => a - b); return v.length ? v[Math.floor(v.length / 2)] : null; };
 
 const state = { rows: [], industry: "", objective: "", sort: "engagement-desc", detailList: [], detailIdx: 0 };
-const BENCHMARKS = [
-  ["TikTok (platform avg CPM)", 4.82, "Gupta Media 2025"],
-  ["Meta (platform avg CPM)", 8.19, "Gupta Media 2025"],
-  ["YouTube (platform avg CPM)", 4.99, "Gupta Media 2025"],
-  ["CTV / streaming (avg CPM)", 26.50, "eMarketer Dec 2025"],
-];
-
 function sliceRows() {
   return state.rows.filter((r) =>
     (!state.industry || r.industry === state.industry) &&
@@ -40,11 +33,6 @@ function renderSlice() {
     `<span>median CTR <strong>${fmtPct(med(rows.map((r) => r.ctr)))}</strong></span>` +
     `<span>median retention <strong>${fmtPct(med(rows.map((r) => r.retention)))}</strong></span>` +
     `</div>`;
-  const bench = BENCHMARKS.map(([name, cpm, src]) =>
-    `<span class="bench-chip">${esc(name)}: <strong>$${cpm.toFixed(2)}</strong> per 1,000 impressions <em>(${esc(src)})</em></span>`).join("");
-  $("#cpmView").innerHTML =
-    `<div class="cpm-head">For scale — CPM benchmarks (impressions, not engagements)</div><div class="bench-row">${bench}</div>` +
-    (cpe ? `<p class="cpm-note">This slice buys an engagement for ${fmtCpe(cpe)}. $1,000 here buys ${fmtInt(1000 / cpe)} engagements. $1,000 on a CPM channel buys impressions instead — 1,000 impressions at a $8.19 CPM costs $8.19 and buys no promised engagement at all.</p>` : "");
   return rows;
 }
 function card(r) {
